@@ -1,49 +1,44 @@
 <!doctype html>
 
 <html lang="en">
+
 <head>
-<style> 
-h5 {
-	text-align: center;
-}
-</style>
-  <meta charset="utf-8">
-<meta name='viewport' content='width=device-width, 
-initial-scale=1.0, maximum-scale=1.0, 
-user-scalable=0' 
->
-  <title>The HTML5 Herald</title>
-<h5>holaa</h5>
+	<style>
+		h5 {
+			text-align: center;
+		}
+	</style>
+	<meta charset="utf-8">
+	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+	<title>The HTML5 Herald</title>
+	<h5>holaa</h5>
 
 </head>
-<input placeholder="id youtube" 
-id="idinput"/>
-<button 
-onclick="download()">descargar</button>
+<div id="main-container">
+	<input placeholder="id youtube" id="idinput" />
+	<button onclick="download()">descargar</button>
+	<a id="downloader" type="download" style="">ASS</a>
+</div>
+
 <body>
 
-<script
-  
-src="https://code.jquery.com/jquery-3.3.1.js"
-  
-integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-  crossorigin="anonymous"></script>
-  <script>
-	function download() {
-let id = 
-document.getElementById("idinput").value
-$.ajax({
-url: "localhost:8080/api/getURL/" 
-+ id,
-success: function (resp) {
-	$.ajax({
-	url: resp.body
-	})
-}
-}) 
-}
-		
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+	<script>
+		function download() {
+			let id = document.getElementById("idinput").value
+			$.ajax({
+				url: "http://localhost:8080/api/getURL?id=" + id,
+				success: function (resp) {
+					$('#downloader').attr({ target: '_blank', href: resp });
+					//window.location.href = resp
+					$('a').click(function (e) {
+					});
+				}
+			})
+		}
 
-</script>
+
+	</script>
 </body>
+
 </html>
