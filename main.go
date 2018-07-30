@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rylio/ytdl"
@@ -22,8 +24,10 @@ func main() {
 				id := params.Get("id")
 				log.Println("id:", id)
 				url := getAudioURLOrDefault(id)
+
 				c.String(http.StatusOK, url)
 			})
+		api.Static("/video", "./videos")
 	}
 	r.Run()
 
@@ -31,15 +35,13 @@ func main() {
 
 func getAudioURLOrDefault(id string) string {
 	vinfo, err := ytdl.GetVideoInfoFromID(id)
-	log.Println("vinfo: ", vinfo)
 	check(err)
-	best := vinfo.Formats.Best(ytdl.FormatAudioBitrateKey) // ytdl.FormatAudioBitrateKey
+	best := vinfo.Formats.Best(ytdl.FormatAudioEncodingKey) // ytdl.FormatAudioBitrateKey
 	if len(best) > 0 {
-		log.Println(best)
-		url, err := vinfo.GetDownloadURL(best[0])
+		log.Println(best[0])
 		check(err)
 		log.Println("AUDIO BITRATE")
-		return url.String()
+		return saveFile(vinfo, best[0])
 	}
 	url, err := vinfo.GetDownloadURL(vinfo.Formats[0])
 	check(err)
@@ -47,10 +49,34 @@ func getAudioURLOrDefault(id string) string {
 	return url.String()
 
 }
+
+var VideoPath string = "./videos/"
+
+func saveFile(v *ytdl.VideoInfo, format ytdl.Format) string {
+	filename := strings.Replace(v.Title+".mp4", " ", "", -1)
+	filepath := VideoPath + filename
+	var _, err = os.Stat(filepath)
+	if os.IsNotExist(err) {
+
+		var file, _ = os.Create(filepath)
+		defer file.Close()
+		v.Download(format, file)
+	}
+	return filename
+}
+
 func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func isError(err error) bool {
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	return (err != nil)
 }
 
 type test struct {
