@@ -38,7 +38,7 @@ func getAudioURLOrDefault(id string) string {
 	check(err)
 	best := vinfo.Formats.Best(ytdl.FormatAudioEncodingKey) // ytdl.FormatAudioBitrateKey
 	if len(best) > 0 {
-		log.Println(best[0])
+		//format := getBestAudio(vinfo.Formats)
 		check(err)
 		log.Println("AUDIO BITRATE")
 		return saveFile(vinfo, best[0])
@@ -48,6 +48,18 @@ func getAudioURLOrDefault(id string) string {
 	log.Println("DEFAULT FORMAT")
 	return url.String()
 
+}
+
+func getBestAudio(fl ytdl.FormatList) ytdl.Format {
+	var best ytdl.Format
+	for _, f := range fl {
+		if f.VideoEncoding == "" && f.Extension == "webm" {
+			log.Println(f)
+			best = f
+		}
+	}
+	log.Println("Saved?")
+	return best
 }
 
 var VideoPath string = "./videos/"
@@ -60,7 +72,9 @@ func saveFile(v *ytdl.VideoInfo, format ytdl.Format) string {
 
 		var file, _ = os.Create(filepath)
 		defer file.Close()
+		log.Println("Saved?")
 		v.Download(format, file)
+		log.Println("Saved?")
 	}
 	return filename
 }

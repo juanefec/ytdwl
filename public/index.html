@@ -4,6 +4,23 @@
 
 <head>
 	<style>
+		.container {
+			display: grid;
+			/* grid-template-columns:1fr 1fr 1fr;*/
+			grid-template-columns: repeat(3, 1fr);
+			grid-gap: 1em;
+			/* grid-auto-rows:100px; */
+			grid-auto-rows: minmax(100px, auto);
+		}
+		.headertitle {
+			grid-row: 1/4;
+		}
+
+		.formdownload {
+			grid-row: 1/4;
+			justify-items:center;
+		}
+
 		h5 {
 			text-align: center;
 		}
@@ -11,47 +28,26 @@
 	<meta charset="utf-8">
 	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
 	<title>The HTML5 Herald</title>
-	<h5>holaa</h5>
-
 </head>
-<div id="main-container">
-	<div style="align-content: center">
-		<input placeholder="id youtube" id="idinput" />
-		<button download onclick="download()">descargar</button>
-	</div>
-	<a id="dl"></a>
-</div>
 
 <body>
 
+	<div id="container">
+		<div class="headertitle">
+			<h5>Welcome.. Download youtube content
+				<strong>here</strong> :D</h5>
+		</div>
+		<div class="formdownload">
+			<input placeholder="id youtube" id="idinput" />
+			<button download onclick="download()">descargar</button>
+		</div>
+	</div>
+
+
+
+
 	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-	<script>
-		let dl;
-		function download() {
-			let id = document.getElementById("idinput").value
-			$.ajax({
-				url: "http://localhost:8080/api/getURL?id=" + id
-			}).then(function (resp) {
-					$.ajax({
-						url: "http://localhost:8080/api/video/"+resp,
-						contentType: 'video/mp4',
-						success: function (response) {
-							
-							dl = new Blob([response], {type: 'application/octet-stream'})
-							const url = window.URL.createObjectURL(dl);
-							console.log(url)
-							const link = document.createElement('a');
-							link.href = url;
-							link.setAttribute('download', resp);
-							document.body.appendChild(link);
-							link.click();
-						}
-					})
-				})
-		}
-
-
-	</script>
+	<script src="./js/main.js"></script>
 </body>
 
 </html>
