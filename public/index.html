@@ -4,21 +4,19 @@
 
 <head>
 	<style>
-		.container {
+		.container > div {
 			display: grid;
 			/* grid-template-columns:1fr 1fr 1fr;*/
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: 100%;
 			grid-gap: 1em;
 			/* grid-auto-rows:100px; */
-			grid-auto-rows: minmax(100px, auto);
+			grid-auto-rows: minmax(25px, auto);
 		}
 		.headertitle {
-			grid-row: 1/4;
+			
 		}
 
 		.formdownload {
-			grid-row: 1/4;
-			justify-items:center;
 		}
 
 		h5 {
@@ -27,13 +25,14 @@
 	</style>
 	<meta charset="utf-8">
 	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
-	<title>The HTML5 Herald</title>
+	<title>YTDL</title>
 </head>
 
 <body>
 
-	<div id="container">
-		<div class="headertitle">
+	<div id="container" class="container">
+		<div></div>
+		<div >
 			<h5>Welcome.. Download youtube content
 				<strong>here</strong> :D</h5>
 		</div>

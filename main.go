@@ -38,10 +38,10 @@ func getAudioURLOrDefault(id string) string {
 	check(err)
 	best := vinfo.Formats.Best(ytdl.FormatAudioEncodingKey) // ytdl.FormatAudioBitrateKey
 	if len(best) > 0 {
-		//format := getBestAudio(vinfo.Formats)
+		format := getBestAudio(vinfo.Formats)
 		check(err)
-		log.Println("AUDIO BITRATE")
-		return saveFile(vinfo, best[0])
+		log.Println("AUDIO BITRATE", format)
+		return saveFile(vinfo, format)
 	}
 	url, err := vinfo.GetDownloadURL(vinfo.Formats[0])
 	check(err)
@@ -53,28 +53,31 @@ func getAudioURLOrDefault(id string) string {
 func getBestAudio(fl ytdl.FormatList) ytdl.Format {
 	var best ytdl.Format
 	for _, f := range fl {
-		if f.VideoEncoding == "" && f.Extension == "webm" {
+		if isAcceptedAudio(f) {
 			log.Println(f)
 			best = f
 		}
 	}
-	log.Println("Saved?")
 	return best
+}
+func isAcceptedAudio(f ytdl.Format) bool {
+	if f.Resolution == "" && f.VideoEncoding == "" && (f.Extension == "webm" || f.Extension == "mp4") {
+		return true
+	}
+	return false
 }
 
 var VideoPath string = "./videos/"
 
 func saveFile(v *ytdl.VideoInfo, format ytdl.Format) string {
-	filename := strings.Replace(v.Title+".mp4", " ", "", -1)
+	filename := strings.Replace(v.Title+"."+format.Extension, " ", "", -1)
 	filepath := VideoPath + filename
 	var _, err = os.Stat(filepath)
 	if os.IsNotExist(err) {
 
 		var file, _ = os.Create(filepath)
 		defer file.Close()
-		log.Println("Saved?")
 		v.Download(format, file)
-		log.Println("Saved?")
 	}
 	return filename
 }
