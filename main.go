@@ -54,7 +54,6 @@ func getBestAudio(fl ytdl.FormatList) ytdl.Format {
 	var best ytdl.Format
 	for _, f := range fl {
 		if isAcceptedAudio(f) {
-			log.Println(f)
 			best = f
 		}
 	}
@@ -67,10 +66,11 @@ func isAcceptedAudio(f ytdl.Format) bool {
 	return false
 }
 
-var VideoPath string = "./videos/"
+// VideoPath for writing files
+var VideoPath = "./videos/"
 
 func saveFile(v *ytdl.VideoInfo, format ytdl.Format) string {
-	filename := strings.Replace(v.Title+"."+format.Extension, " ", "", -1)
+	filename := fmtTitleToFilename(v.Title + "." + format.Extension)
 	filepath := VideoPath + filename
 	var _, err = os.Stat(filepath)
 	if os.IsNotExist(err) {
@@ -80,6 +80,11 @@ func saveFile(v *ytdl.VideoInfo, format ytdl.Format) string {
 		v.Download(format, file)
 	}
 	return filename
+}
+
+func fmtTitleToFilename(t string) string {
+	replacer := strings.NewReplacer(" ", "", "\"", "")
+	return replacer.Replace(t)
 }
 
 func check(err error) {
